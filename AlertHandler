@@ -1,0 +1,70 @@
+class AlertHandler: NSObject {
+
+    static let sharedAlert = AlertHandler()
+    
+    fileprivate var currentVC: UIViewController!
+    
+    func showSimpleAlert(vc : UIViewController ,titleMsg: String,alertMsg: String){
+        currentVC = vc
+        let alertController = UIAlertController(title: "\(titleMsg)", message: "\(alertMsg)", preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: { (alert: UIAlertAction!) -> Void in
+            //  Do something here upon cancellation.
+        })
+        alertController.addAction(cancelAction)
+        if let popoverController = alertController.popoverPresentationController {
+            popoverController.sourceView = vc.view
+            popoverController.sourceRect = CGRect(x: vc.view.bounds.midX, y: vc.view.bounds.midY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = []
+        }
+        vc.present(alertController, animated: true, completion: nil)
+    }
+    
+    func alertWithCustomActions(vc : UIViewController, btn1Title : String , btn2Title : String ,titleMsg: String,alertMsg: String , completionHandler: (() -> Void)? = nil){
+        
+        currentVC = vc
+        let alertController = UIAlertController(title: "\(titleMsg)", message: "\(alertMsg)", preferredStyle: .alert)
+        
+        let btn1Action = UIAlertAction(title: btn1Title, style: .cancel, handler: { (alert: UIAlertAction!) -> Void in
+            //  Do something here upon cancellation.
+        })
+        let btn2Action = UIAlertAction(title: btn2Title, style: .default, handler: { (alert: UIAlertAction!) -> Void in
+            completionHandler?()
+            //  Do something here upon cancellation.
+        })
+        alertController.addAction(btn1Action)
+        alertController.addAction(btn2Action)
+        if let popoverController = alertController.popoverPresentationController {
+            popoverController.sourceView = vc.view
+            popoverController.sourceRect = CGRect(x: vc.view.bounds.midX, y: vc.view.bounds.midY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = []
+        }
+        vc.present(alertController, animated: true, completion: nil)
+    }
+}
+
+//MARK: How this class works
+As above code there is singleton Object sharedAlert , One can use this class method using singleton Object.
+
+//MARK: How to call Method
+
+1- Call SimpleAlertMethod
+
+AlertHandler.sharedAlert.showSimpleAlert(vc: self, titleMsg: "Some String", alertMsg: "Message You Want to Dispaly")
+
+
+2 - Call AlertWithCustomActions
+
+ AlertHandler.sharedAlert.alertWithCustomActions(vc: self, btn1Title: "No", btn2Title: "Yes", titleMsg: "Testing Alert", alertMsg: "Testing Alert Message", completionHandler: {
+                //DO Whatever action You want to perform on click of btn2 here
+                print("SOMETHING HERE")
+            })
+
+
+
+
+
+
+
+
+
